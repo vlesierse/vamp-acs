@@ -1147,11 +1147,11 @@
         },
         {
             "type": "Microsoft.Compute/virtualMachines/extensions",
-            "name": "[concat('dcos-master-',variables('nameSuffix'),'-0','/','installvamp')]",
-            "apiVersion": "2015-05-01-preview",
+            "name": "[concat(variables('masterVMNamePrefix'), sub(variables('masterCount'), 1), '/installvamp')]",
+            "apiVersion": "[variables('apiVersionDefault')]",
             "location": "[resourceGroup().location]",
             "dependsOn": [
-                "[concat(variables('masterVMNamePrefix'), sub(variables('masterCount'), 1), '/waitforleader')]"
+                "[resourceId('Microsoft.Compute/virtualMachines/extensions',concat(variables('masterVMNamePrefix'), sub(variables('masterCount'), 1)), 'waitforleader')]"
             ],
             "properties": {
                 "publisher": "Microsoft.Azure.Extensions",
@@ -1160,7 +1160,7 @@
                 "typeHandlerVersion": "2.0",
                 "settings": {
                     "fileUris": [
-                        ""
+                        "https://raw.githubusercontent.com/vlesierse/vamp-acs/master/scripts/installvamp.sh"
                     ],
                     "commandToExecute": "chmod +x installvamp.sh; ./installvamp.sh -o dcos"
                 }
